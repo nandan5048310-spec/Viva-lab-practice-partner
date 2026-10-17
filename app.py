@@ -85,3 +85,47 @@ if st.session_state.mcq_submitted:
         )
 
     st.write(f"Score: {st.session_state.mcq_score} / 1")
+
+
+# -------------------------------
+# Written Answer Practice
+# -------------------------------
+
+st.divider()
+st.header("✍️ Written Answer Practice")
+
+st.write(
+    "Practice answering lab viva questions in your own words."
+)
+
+written_question = (
+    "What is the purpose of the print() function in Python?"
+)
+
+st.subheader("Question")
+st.write(written_question)
+
+written_answer = st.text_area(
+    "Type your answer here:",
+    placeholder="Write your explanation in your own words...",
+    height=150,
+    key="written_answer"
+)
+
+if st.button("Submit Written Answer"):
+    if written_answer.strip():
+        if "print" in written_answer.lower():
+            st.success("Good start! Your answer mentions print().")
+            st.write(
+                "**Sample answer:** "
+                "The print() function displays text or other values "
+                "on the screen."
+            )
+        else:
+            st.info(
+                "Keep trying! Explain which Python function displays "
+                "text or values on the screen."
+            )
+    else:
+        st.warning("Please write an answer before submitting.")
+
