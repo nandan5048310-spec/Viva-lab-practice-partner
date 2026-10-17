@@ -1,6 +1,7 @@
 
 import pytest
-
+from docx import Document
+from io import BytesIO
 from utils import extract_text
 
 
@@ -37,3 +38,13 @@ def test_extract_text_rejects_oversized_file():
 
     with pytest.raises(ValueError, match="too large"):
         extract_text("notes.txt", oversized_content)
+def test_extract_text_from_docx():
+    document = Document()
+    document.add_paragraph("Chemistry Viva Practice")
+
+    file_buffer = BytesIO()
+    document.save(file_buffer)
+
+    result = extract_text("notes.docx", file_buffer.getvalue())
+
+    assert "Chemistry Viva Practice" in result
