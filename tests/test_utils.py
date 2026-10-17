@@ -30,6 +30,6 @@ def test_extract_text_rejects_empty_file():
 
 
 def test_extract_text_rejects_invalid_txt_encoding():
-    with pytest.raises(ValueError, match="Could not read"):
+    with pytest.raises(ValueError, match="decode"):
         extract_text("notes.txt", b"\xff\xfe\xfa")
 
