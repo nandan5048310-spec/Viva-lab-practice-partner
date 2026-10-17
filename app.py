@@ -24,18 +24,6 @@ if study_text.strip():
 else:
     st.caption("Your study material will appear here when you enter some text.")
 
-st.subheader("📎 Or upload study material")
-
-uploaded_file = st.file_uploader(
-    "Choose a file",
-    type=["pdf", "docx", "txt", "jpg", "jpeg", "png"],
-    accept_multiple_files=False,
-)
-
-if uploaded_file is not None:
-    st.success(f"Selected file: {uploaded_file.name}")
-    st.caption(f"File size: {uploaded_file.size:,} bytes")
-
 st.divider()
 st.header("📝 MCQ Quiz")
 
@@ -128,4 +116,83 @@ if st.button("Submit Written Answer"):
             )
     else:
         st.warning("Please write an answer before submitting.")
+
+
+# -------------------------------
+# Study Material Upload
+# -------------------------------
+
+st.divider()
+st.header("📚 Upload Study Material")
+
+st.write(
+    "Upload your notes so you can use them for lab viva preparation."
+)
+
+uploaded_file = st.file_uploader(
+    "Choose a study material file",
+    type=["txt", "pdf", "docx", "png", "jpg", "jpeg"],
+    key="study_material_upload"
+)
+
+if uploaded_file is not None:
+    file_name = uploaded_file.name
+    file_extension = file_name.rsplit(".", 1)[-1].lower()
+
+    st.success(f"Uploaded: {file_name}")
+    type=["txt", "pdf", "docx", "png", "jpg", "jpeg"],
+
+    try:
+        if file_extension in ["png", "jpg", "jpeg"]:
+            st.subheader("🖼️ Uploaded Image")
+            st.image(uploaded_file.getvalue(), caption=file_name)
+            st.success(
+                "Image uploaded successfully. "
+                "It can be sent to the AI backend in a later step."
+            )
+
+        elif file_extension == "txt":
+            material_text = uploaded_file.getvalue().decode("utf-8")
+
+        elif file_extension == "pdf":
+            from pypdf import PdfReader
+            import io
+
+            pdf_reader = PdfReader(io.BytesIO(uploaded_file.getvalue()))
+            material_text = "\n".join(
+                page.extract_text() or ""
+                for page in pdf_reader.pages
+            )
+
+        elif file_extension == "docx":
+            from docx import Document
+            import io
+
+            document = Document(io.BytesIO(uploaded_file.getvalue()))
+            material_text = "\n".join(
+                paragraph.text
+                for paragraph in document.paragraphs
+            )
+
+        st.subheader("📖 Extracted Study Material")
+
+        if material_text.strip():
+            st.text_area(
+                "Review your extracted text:",
+                value=material_text,
+                height=250,
+                key="extracted_material_preview"
+            )
+            st.info(
+                "Your material is ready for the next step: "
+                "AI explanations and quiz generation."
+            )
+        else:
+            st.warning(
+                "No readable text was found. "
+                "The PDF may contain scanned pages or images."
+            )
+
+    except Exception as error:
+        st.error(f"Could not read this file: {error}")
 
