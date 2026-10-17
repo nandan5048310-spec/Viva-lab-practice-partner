@@ -32,4 +32,8 @@ def test_extract_text_rejects_empty_file():
 def test_extract_text_rejects_invalid_txt_encoding():
     with pytest.raises(ValueError, match="decode"):
         extract_text("notes.txt", b"\xff\xfe\xfa")
+def test_extract_text_rejects_oversized_file():
+    oversized_content = b"A" * (10 * 1024 * 1024 + 1)
 
+    with pytest.raises(ValueError, match="too large"):
+        extract_text("notes.txt", oversized_content)
