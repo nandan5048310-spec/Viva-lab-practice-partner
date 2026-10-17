@@ -4,3 +4,9 @@ python-dotenv
 pypdf
 python-docx
 Pillow
+streamlit
+google-genai
+python-dotenv
+pypdf
+python-docx
+pytest
