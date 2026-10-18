@@ -10,3 +10,5 @@ python-dotenv
 pypdf
 python-docx
 pytest
+edge-tts
+SpeechRecognition
